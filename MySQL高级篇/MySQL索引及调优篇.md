@@ -1429,6 +1429,13 @@ This function has none of DETERMINISTIC......
 
 主从复制，主机会将写操作记录在bin-log日志中。从机读取bin-log日志，执行语句来同步数据。如果使 用函数来操作数据，会导致从机和主键操作时间不一致。所以，默认情况下，mysql不开启创建函数设置。
 
+%% eason: 所有写操作都会记录到主表的binlog中作为指令集，然后同步到从库的binlog中执行
+​**binlog的三种格式**​
+- ​**STATEMENT模式**​：记录原始SQL语句（如`INSERT ... SELECT ...`）
+- ​**ROW模式**​：记录数据行的实际变更（如某行字段从A变为B）
+- ​**MIXED模式**​：动态选择上述两种模式
+如果采用statement模式，那么可能由于函数里的一些内容（比如日期函数等），会导致主从不一致%%
+
 * 查看mysql是否允许创建函数：
 
 ```mysql
